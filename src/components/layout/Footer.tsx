@@ -85,7 +85,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="mx-auto mt-10 max-w-7xl border-t border-[#f0f4f2] pt-6 text-center text-sm text-[#61896f]">
-        © 2023 Wellness Connect. Tutti i diritti riservati.
+        © 2023 Wellness Connect. Tutti i diritti riservati. Realizzato da Alessandro Barattiero.
       </div>
     </footer>
   );
