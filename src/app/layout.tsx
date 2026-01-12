@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased font-display bg-background-light text-text-main">
         {children}
+        <ChatWidget />
       </body>
     </html>
   );
