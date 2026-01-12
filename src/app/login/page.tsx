@@ -51,17 +51,21 @@ export default function LoginPage() {
         <div className="flex w-full lg:w-1/2 flex-col justify-center bg-white dark:bg-surface-dark px-6 py-10 sm:px-12 md:px-24">
           <div className="w-full max-w-[480px] mx-auto flex flex-col gap-6">
             <div className="flex justify-center mb-4 lg:hidden">
-              <img
-                src="/logoconscritta.png"
-                alt="Wellness Connect Logo"
-                className="h-10 w-auto"
-              />
+              <Link href="/">
+                <img
+                  src="/logoconscritta.png"
+                  alt="Wellness Connect Logo"
+                  className="h-10 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              </Link>
             </div>
             
             {/* Header Text */}
             <div className="flex flex-col gap-2">
               <div className="hidden lg:block mb-2">
-                <img src="/logosenzascritta.png" alt="Logo Icon" className="h-12 w-auto" />
+                <Link href="/">
+                  <img src="/logosenzascritta.png" alt="Logo Icon" className="h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity" />
+                </Link>
               </div>
               <p className="text-text-main dark:text-white text-3xl font-black leading-tight tracking-[-0.033em]">
                 Bentornato
