@@ -325,13 +325,14 @@ export default function ChatWidget() {
         setConversationState("assessment_preference");
 
         addBotMessage(
-          "Ultimo dettaglio: preferisci una visita in presenza o online?",
+          "Ultimo dettaglio: preferisci una visita in presenza, online o a domicilio?",
           {
             type: "options",
             messageOptions: [
               "In studio - di persona",
               "Online - videochiamata",
-              "Entrambe vanno bene"
+              "A domicilio - a casa tua",
+              "Tutte le opzioni"
             ]
           }
         );
@@ -339,11 +340,13 @@ export default function ChatWidget() {
       }
 
       case "assessment_preference": {
-        let preference = "both";
+        let preference = "all";
         if (lowerText.includes("studio") || lowerText.includes("persona")) {
           preference = "in_person";
         } else if (lowerText.includes("online") || lowerText.includes("video")) {
           preference = "online";
+        } else if (lowerText.includes("domicilio") || lowerText.includes("casa")) {
+          preference = "home";
         }
 
         setUserProfile(prev => ({ ...prev, preference }));
@@ -352,11 +355,13 @@ export default function ChatWidget() {
         const category = userProfile.category;
         const cat = category ? CATEGORIES[category as keyof typeof CATEGORIES] : null;
 
+        const preferenceText =
+          preference === "online" ? " per videoconsulto" :
+          preference === "in_person" ? " per visite in studio" :
+          preference === "home" ? " disponibili per visite a domicilio" : "";
+
         addBotMessage(
-          `Ottimo! Ho trovato diversi ${cat?.specialists[0] || "professionisti"} disponibili${
-            preference === "online" ? " per videoconsulto" :
-            preference === "in_person" ? " per visite in studio" : ""
-          }${userProfile.urgency === "urgent" ? " con disponibilità immediata" : ""}. Vuoi che ti mostri i risultati?`,
+          `Ottimo! Ho trovato diversi ${cat?.specialists[0] || "professionisti"}${preferenceText}${userProfile.urgency === "urgent" ? " con disponibilità immediata" : ""}. Vuoi che ti mostri i risultati?`,
           {
             type: "options",
             messageOptions: ["Mostra risultati", "Aggiungi filtri", "Ricomincia"],
@@ -364,7 +369,7 @@ export default function ChatWidget() {
               {
                 type: "link",
                 label: "Vai alla ricerca",
-                value: `/search?category=${category || "all"}${preference === "online" ? "&online=true" : ""}`
+                value: `/search?category=${category || "all"}${preference === "online" ? "&mode=online" : preference === "home" ? "&mode=domicilio" : preference === "in_person" ? "&mode=studio" : ""}`
               }
             ]
           }
@@ -605,9 +610,13 @@ export default function ChatWidget() {
         }
       );
     } else if (option === "Mostra risultati" || option === "Vai alla ricerca" || option === "Vedi professionisti" || option === "Cerca professionisti") {
-      const searchUrl = userProfile.category
-        ? `/search?category=${userProfile.category}${userProfile.preference === "online" ? "&online=true" : ""}`
-        : "/search";
+      let searchUrl = "/search";
+      const params = new URLSearchParams();
+      if (userProfile.category) params.set("category", userProfile.category);
+      if (userProfile.preference === "online") params.set("mode", "online");
+      else if (userProfile.preference === "home") params.set("mode", "domicilio");
+      else if (userProfile.preference === "in_person") params.set("mode", "studio");
+      if (params.toString()) searchUrl += `?${params.toString()}`;
       router.push(searchUrl);
       addBotMessage(
         "Ti porto alla pagina di ricerca! Troverai tutti i professionisti disponibili con i filtri già applicati. Buona ricerca!",
