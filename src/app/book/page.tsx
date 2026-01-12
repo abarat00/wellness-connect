@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 
 export default function BookingPage() {
+  const router = useRouter();
   // Step 1: Date/Time, Step 2: Payment
   const [currentStep, setCurrentStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handlePayment = () => {
+    setIsProcessing(true);
+    // Simulate payment processing
+    setTimeout(() => {
+      router.push("/book/confirmation");
+    }, 1500);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark font-display text-text-main dark:text-white">
@@ -349,11 +360,27 @@ export default function BookingPage() {
                       € 72,00
                     </span>
                   </div>
-                  <button className="w-full bg-primary hover:bg-[#0fd451] text-text-main font-bold py-4 px-6 rounded-xl shadow-lg shadow-green-500/30 transition-all flex items-center justify-center gap-2 group">
-                    <span>Paga e Prenota</span>
-                    <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
-                      arrow_forward
-                    </span>
+                  <button
+                    onClick={handlePayment}
+                    disabled={isProcessing}
+                    className="w-full bg-primary hover:bg-[#0fd451] disabled:bg-primary/70 text-text-main font-bold py-4 px-6 rounded-xl shadow-lg shadow-green-500/30 transition-all flex items-center justify-center gap-2 group disabled:cursor-wait"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>Elaborazione...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Paga e Prenota</span>
+                        <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
+                          arrow_forward
+                        </span>
+                      </>
+                    )}
                   </button>
                   <p className="text-xs text-center text-gray-400 mt-4 flex items-center justify-center gap-1">
                     <span className="material-symbols-outlined text-sm">
