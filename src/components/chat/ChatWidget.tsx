@@ -243,7 +243,7 @@ export default function ChatWidget() {
       delay?: number;
     }
   ) => {
-    const delay = options?.delay ?? (800 + Math.random() * 700);
+    const delay = options?.delay ?? (3000 + Math.random() * 1000);
 
     setIsTyping(true);
     setTimeout(() => {
@@ -430,8 +430,14 @@ export default function ChatWidget() {
           setUserProfile(prev => ({ ...prev, category }));
           setConversationState("assessment_urgency");
 
+          // Messaggio empatico per categorie legate a dolore/problemi
+          const isEmpatheticCategory = category === "physio" || category === "mental";
+          const messageIntro = isEmpatheticCategory
+            ? `Mi dispiace sentire questo. Per ${cat.name} abbiamo molti specialisti qualificati che possono aiutarti: ${cat.specialists.join(", ")}.`
+            : `Per ${cat.name} abbiamo molti specialisti qualificati: ${cat.specialists.join(", ")}.`;
+
           addBotMessage(
-            `Ottima scelta! Per ${cat.name} abbiamo molti specialisti qualificati: ${cat.specialists.join(", ")}. Per trovarti il match perfetto, quanto è urgente la tua esigenza?`,
+            `${messageIntro} Quanto è urgente la tua esigenza?`,
             {
               type: "options",
               messageOptions: [
@@ -734,10 +740,13 @@ export default function ChatWidget() {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="bg-white dark:bg-[#232825] border border-gray-100 dark:border-gray-800 rounded-2xl rounded-bl-sm p-4 shadow-sm">
-                  <div className="flex gap-1.5">
-                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce"></span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
+                    </div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 italic">L&apos;agent sta ragionando...</span>
                   </div>
                 </div>
               </div>
